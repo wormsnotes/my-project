@@ -1,0 +1,27 @@
+# Local settings and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.ssh/
+.aws/
+.codex/
+.claude/
+
+# Dependencies and generated files
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+dist/
+build/
+coverage/
+
+# Logs, editor caches, and OS files
+*.log
+.DS_Store
+Thumbs.db
+.vscode/.ropeproject/

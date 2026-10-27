@@ -1,0 +1,78 @@
+name: Build, test, benchmark and docs
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Install C++ tools and libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            g++ cmake ninja-build pkg-config libquantlib0-dev \
+            libgtest-dev libbenchmark-dev doxygen
+      - name: Configure Release build
+        run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+      - name: Build
+        run: cmake --build build --parallel 2
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure
+      - name: Run sample portfolio and export synthetic history
+        run: |
+          ./build/portfolio-risk --rub 100000 --usd 1000 --eur 500 \
+            --samples 10000 --seed 42 --history-out build/synthetic_fx.csv \
+            | tee build/example-report.txt
+      - name: Run benchmark (results also appear in this log)
+        run: |
+          ./build/portfolio_benchmark \
+            --benchmark_out=build/benchmark.json --benchmark_out_format=json
+      - name: Build Doxygen documentation
+        run: cmake --build build --target docs
+      - name: Save reports and documentation
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports-and-documentation
+          path: |
+            build/benchmark.json
+            build/example-report.txt
+            build/synthetic_fx.csv
+            build/Testing/Temporary/LastTest.log
+            build/docs/html/
+      - name: Upload Pages artifact
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && !github.event.repository.private
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: build/docs/html
+
+  publish-docs:
+    needs: checks
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && !github.event.repository.private
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Publish Doxygen HTML
+        id: deployment
+        uses: actions/deploy-pages@v4

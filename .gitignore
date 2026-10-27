@@ -18,10 +18,21 @@ __pycache__/
 .pytest_cache/
 dist/
 build/
+/build-*/
+/cmake-build-*/
+/out/
+CMakeUserPresets.json
 coverage/
+
+# Generated project documentation
+/docs/html/
+/docs/latex/
 
 # Logs, editor caches, and OS files
 *.log
 .DS_Store
 Thumbs.db
 .vscode/.ropeproject/
+*.user
+*.swp
+*.swo

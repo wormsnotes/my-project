@@ -121,13 +121,13 @@ cmake --build build --target docs
 
 Локальная HTML-документация: `build/docs/html/index.html`.
 
-Документация в закрытом репозитории: откройте [GitHub Actions](https://github.com/wormsnotes/my-project/actions), выберите успешный запуск и скачайте артефакт `reports-and-documentation`. Распакуйте архив и откройте `docs/html/index.html`.
+Документация проекта: [wormsnotes.github.io/my-project](https://wormsnotes.github.io/my-project/).
 
-Адрес подготовленной будущей публикации: [wormsnotes.github.io/my-project](https://wormsnotes.github.io/my-project/). **Сайт пока не опубликован:** текущий тариф GitHub не поддерживает Pages для этого закрытого репозитория. Репозиторий остаётся закрытым по выбору пользователя.
+Дополнительная копия HTML доступна в [GitHub Actions](https://github.com/wormsnotes/my-project/actions): выберите успешный запуск и скачайте артефакт `reports-and-documentation`. Распакуйте архив и откройте `docs/html/index.html`.
 
 Workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) при каждом push и pull request собирает программу, запускает тесты, пример и бенчмарк, генерирует Doxygen. Отчёты, CSV и HTML сохраняются в артефакт `reports-and-documentation`. Скорость также видна в шаге `Run benchmark`.
 
-После успешных проверок в публичном репозитории документация ветки `main` автоматически публикуется через GitHub Pages. При первой публикации workflow включает Pages, если права репозитория позволяют. Сейчас публикация сайта пропускается, но сборка и сохранение HTML в артефакт выполняются. Требования ДЗ о публичном репозитории и опубликованном сайте документации пока не выполнены.
+Репозиторий [wormsnotes/my-project](https://github.com/wormsnotes/my-project) публичный. После успешных проверок документация ветки `main` автоматически публикуется через GitHub Pages. Для остальных веток и pull request выполняются проверки и сохраняется HTML-артефакт без изменения сайта.
 
 ## Структура
 
